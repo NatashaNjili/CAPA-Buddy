@@ -320,55 +320,55 @@ function ChatPage() {
         </div>
       </main>
 
-      <div className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto w-full max-w-3xl px-4 py-3">
-          {!canType && (
-            <p className="pb-2 text-center text-base font-semibold text-muted-foreground">
-              Tap a button above — or tap <span className="text-accent">“{OTHER}”</span> to type your
-              own question.
-            </p>
-          )}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit();
-            }}
-            className="flex items-end gap-2"
-          >
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={!canType}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  submit();
-                }
+      {started && (
+        <div className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur">
+          <div className="mx-auto w-full max-w-3xl px-4 py-3">
+            {!canType && (
+              <p className="pb-2 text-center text-base font-semibold text-muted-foreground">
+                Tap a button above — or tap <span className="text-accent">“{OTHER}”</span> to type your
+                own question.
+              </p>
+            )}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit();
               }}
-              rows={1}
-              placeholder={
-                !started
-                  ? "Type hi to start…"
-                  : freeMode
+              className="flex items-end gap-2"
+            >
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={!canType}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    submit();
+                  }
+                }}
+                rows={1}
+                placeholder={
+                  freeMode
                     ? "Type your question here…"
                     : "Tap “Other — Ask CAPA-Buddy” to type"
-              }
-              className="min-h-[56px] flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-4 text-lg outline-none focus:border-accent disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={busy || !canType || !input.trim()}
-              aria-label="Send"
-              className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
-            >
-              <Send className="size-6" />
-            </button>
-          </form>
-          <p className="pt-2 text-center text-xs text-muted-foreground">
-            AI-generated content may require human review.
-          </p>
+                }
+                className="min-h-[56px] flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-4 text-lg outline-none focus:border-accent disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={busy || !canType || !input.trim()}
+                aria-label="Send"
+                className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
+              >
+                <Send className="size-6" />
+              </button>
+            </form>
+            <p className="pt-2 text-center text-xs text-muted-foreground">
+              AI-generated content may require human review.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

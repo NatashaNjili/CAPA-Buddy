@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApproveApprovalTokenRouteImport } from './routes/approve.$approvalToken'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApproveApprovalTokenRoute = ApproveApprovalTokenRouteImport.update({
+  id: '/approve/$approvalToken',
+  path: '/approve/$approvalToken',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/approve/$approvalToken'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/approve/$approvalToken'
+  id: '__root__' | '/' | '/approve/$approvalToken'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApproveApprovalTokenRoute: typeof ApproveApprovalTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/approve/$approvalToken': {
+      id: '/approve/$approvalToken'
+      path: '/approve/$approvalToken'
+      fullPath: '/approve/$approvalToken'
+      preLoaderRoute: typeof ApproveApprovalTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApproveApprovalTokenRoute: ApproveApprovalTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

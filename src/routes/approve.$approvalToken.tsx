@@ -3,7 +3,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 
 import { PinGate } from "@/components/PinGate";
-import { getSuggestion, resolveSuggestion, type SuggestionState } from "@/lib/admin.functions";
+import {
+  getSuggestion,
+  resolveSuggestion,
+  verifyAdminPin,
+  type SuggestionState,
+} from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/approve/$approvalToken")({
   head: () => ({
@@ -22,6 +27,7 @@ function ApprovePage() {
   const { a: accessToken } = useSearch({ from: "/approve/$approvalToken" });
   const load = useServerFn(getSuggestion);
   const resolve = useServerFn(resolveSuggestion);
+  const verifyPin = useServerFn(verifyAdminPin);
 
   const [state, setState] = useState<SuggestionState | null>(null);
   const [pin, setPin] = useState<string | null>(null);
@@ -61,8 +67,7 @@ function ApprovePage() {
           setBusy(true);
           setPinError(null);
           try {
-            const { verifyAdminPin } = await import("@/lib/admin.functions");
-            await verifyAdminPin({ data: { accessToken, pin: value } });
+            await verifyPin({ data: { accessToken, pin: value } });
             setPin(value);
           } catch (e) {
             setPinError(e instanceof Error ? e.message : "That PIN is not correct.");

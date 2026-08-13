@@ -14,7 +14,175 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admins: {
+        Row: {
+          access_token: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          pin_hash: string
+          role: string
+        }
+        Insert: {
+          access_token?: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          pin_hash: string
+          role: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          pin_hash?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          is_main_topic: boolean
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category: string
+          created_at?: string
+          id?: string
+          is_main_topic?: boolean
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_main_topic?: boolean
+          question?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      question_log: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          id: string
+          intent_key: string | null
+          match_type: string
+          matched_id: string | null
+          raw_question_text: string
+          routed_role: string | null
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          intent_key?: string | null
+          match_type: string
+          matched_id?: string | null
+          raw_question_text: string
+          routed_role?: string | null
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          intent_key?: string | null
+          match_type?: string
+          matched_id?: string | null
+          raw_question_text?: string
+          routed_role?: string | null
+        }
+        Relationships: []
+      }
+      reference_document: {
+        Row: {
+          content: string
+          id: string
+          updated_at: string
+          updated_by_admin_id: string | null
+        }
+        Insert: {
+          content?: string
+          id?: string
+          updated_at?: string
+          updated_by_admin_id?: string | null
+        }
+        Update: {
+          content?: string
+          id?: string
+          updated_at?: string
+          updated_by_admin_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reference_document_updated_by_admin_id_fkey"
+            columns: ["updated_by_admin_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      suggested_questions: {
+        Row: {
+          approval_token: string
+          approved_by_admin_id: string | null
+          ask_count: number
+          first_asked_at: string
+          id: string
+          intent_key: string
+          last_asked_at: string
+          representative_question_text: string
+          status: string
+        }
+        Insert: {
+          approval_token?: string
+          approved_by_admin_id?: string | null
+          ask_count?: number
+          first_asked_at?: string
+          id?: string
+          intent_key: string
+          last_asked_at?: string
+          representative_question_text: string
+          status?: string
+        }
+        Update: {
+          approval_token?: string
+          approved_by_admin_id?: string | null
+          ask_count?: number
+          first_asked_at?: string
+          id?: string
+          intent_key?: string
+          last_asked_at?: string
+          representative_question_text?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggested_questions_approved_by_admin_id_fkey"
+            columns: ["approved_by_admin_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

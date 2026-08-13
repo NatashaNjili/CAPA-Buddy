@@ -10,33 +10,77 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminAccessTokenRouteImport } from './routes/admin.$accessToken'
+import { Route as ApproveApprovalTokenRouteImport } from './routes/approve.$approvalToken'
+import { Route as ApiPublicHooksReferenceReminderRouteImport } from './routes/api/public/hooks/reference-reminder'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAccessTokenRoute = AdminAccessTokenRouteImport.update({
+  id: '/admin/$accessToken',
+  path: '/admin/$accessToken',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApproveApprovalTokenRoute = ApproveApprovalTokenRouteImport.update({
+  id: '/approve/$approvalToken',
+  path: '/approve/$approvalToken',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksReferenceReminderRoute =
+  ApiPublicHooksReferenceReminderRouteImport.update({
+    id: '/api/public/hooks/reference-reminder',
+    path: '/api/public/hooks/reference-reminder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
+  '/api/public/hooks/reference-reminder': typeof ApiPublicHooksReferenceReminderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
+  '/api/public/hooks/reference-reminder': typeof ApiPublicHooksReferenceReminderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
+  '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
+  '/api/public/hooks/reference-reminder': typeof ApiPublicHooksReferenceReminderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin/$accessToken'
+    | '/approve/$approvalToken'
+    | '/api/public/hooks/reference-reminder'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin/$accessToken'
+    | '/approve/$approvalToken'
+    | '/api/public/hooks/reference-reminder'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/$accessToken'
+    | '/approve/$approvalToken'
+    | '/api/public/hooks/reference-reminder'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminAccessTokenRoute: typeof AdminAccessTokenRoute
+  ApproveApprovalTokenRoute: typeof ApproveApprovalTokenRoute
+  ApiPublicHooksReferenceReminderRoute: typeof ApiPublicHooksReferenceReminderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +92,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/$accessToken': {
+      id: '/admin/$accessToken'
+      path: '/admin/$accessToken'
+      fullPath: '/admin/$accessToken'
+      preLoaderRoute: typeof AdminAccessTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/approve/$approvalToken': {
+      id: '/approve/$approvalToken'
+      path: '/approve/$approvalToken'
+      fullPath: '/approve/$approvalToken'
+      preLoaderRoute: typeof ApproveApprovalTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/reference-reminder': {
+      id: '/api/public/hooks/reference-reminder'
+      path: '/api/public/hooks/reference-reminder'
+      fullPath: '/api/public/hooks/reference-reminder'
+      preLoaderRoute: typeof ApiPublicHooksReferenceReminderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminAccessTokenRoute: AdminAccessTokenRoute,
+  ApproveApprovalTokenRoute: ApproveApprovalTokenRoute,
+  ApiPublicHooksReferenceReminderRoute: ApiPublicHooksReferenceReminderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

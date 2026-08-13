@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminAccessTokenRouteImport } from './routes/admin.$accessToken'
 import { Route as ApproveApprovalTokenRouteImport } from './routes/approve.$approvalToken'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAccessTokenRoute = AdminAccessTokenRouteImport.update({
+  id: '/admin/$accessToken',
+  path: '/admin/$accessToken',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApproveApprovalTokenRoute = ApproveApprovalTokenRouteImport.update({
@@ -25,27 +31,31 @@ const ApproveApprovalTokenRoute = ApproveApprovalTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
   '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
   '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/$accessToken': typeof AdminAccessTokenRoute
   '/approve/$approvalToken': typeof ApproveApprovalTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/approve/$approvalToken'
+  fullPaths: '/' | '/admin/$accessToken' | '/approve/$approvalToken'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/approve/$approvalToken'
-  id: '__root__' | '/' | '/approve/$approvalToken'
+  to: '/' | '/admin/$accessToken' | '/approve/$approvalToken'
+  id: '__root__' | '/' | '/admin/$accessToken' | '/approve/$approvalToken'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminAccessTokenRoute: typeof AdminAccessTokenRoute
   ApproveApprovalTokenRoute: typeof ApproveApprovalTokenRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/$accessToken': {
+      id: '/admin/$accessToken'
+      path: '/admin/$accessToken'
+      fullPath: '/admin/$accessToken'
+      preLoaderRoute: typeof AdminAccessTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/approve/$approvalToken': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminAccessTokenRoute: AdminAccessTokenRoute,
   ApproveApprovalTokenRoute: ApproveApprovalTokenRoute,
 }
 export const routeTree = rootRouteImport

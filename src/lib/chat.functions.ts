@@ -209,7 +209,7 @@ export const emailQuestionToTeam = createServerFn({ method: "POST" })
       .eq("role", data.role);
 
     const recipients = (admins ?? []).map((a) => a.email);
-    if (recipients.length === 0) return { sent: false };
+    if (recipients.length === 0) return { sent: false, reason: "no_recipients", recipients };
 
     const res = await sendEmail(
       recipients,
@@ -221,5 +221,5 @@ export const emailQuestionToTeam = createServerFn({ method: "POST" })
          <p>Please follow up with the candidate at the programme.</p>`,
       ),
     );
-    return { sent: res.sent, recipients };
+    return { sent: res.sent, reason: "reason" in res ? res.reason : null, recipients };
   });

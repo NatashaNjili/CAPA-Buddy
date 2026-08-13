@@ -143,13 +143,28 @@ function ChatPage() {
   const doEmail = async (m: Message) => {
     if (!m.routed?.role) return;
     const question = [...messages].reverse().find((x) => x.from === "user")?.text ?? "";
-    setEmailed((p) => ({ ...p, [m.id]: true }));
     try {
-      await emailTeam({ data: { logId: m.logId!, question, role: m.routed.role } });
+      const res = await emailTeam({ data: { logId: m.logId!, question, role: m.routed.role } });
+      if (res.sent) {
+        setEmailed((p) => ({ ...p, [m.id]: true }));
+      } else {
+        push({
+          from: "bot",
+          text: "Sorry — I couldn't send that email just now. Please use the contact details below or tell a staff member.",
+        });
+        setShowContacts((p) => ({ ...p, [m.id]: true }));
+      }
     } catch (e) {
       console.error(e);
+      push({
+        from: "bot",
+        text: "Sorry — I couldn't send that email just now. Please use the contact details below.",
+      });
+      setShowContacts((p) => ({ ...p, [m.id]: true }));
     }
   };
+
+  const canType = !started || freeMode;
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -307,6 +322,12 @@ function ChatPage() {
 
       <div className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-4 py-3">
+          {!canType && (
+            <p className="pb-2 text-center text-base font-semibold text-muted-foreground">
+              Tap a button above — or tap <span className="text-accent">“{OTHER}”</span> to type your
+              own question.
+            </p>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -317,6 +338,7 @@ function ChatPage() {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={!canType}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -325,17 +347,17 @@ function ChatPage() {
               }}
               rows={1}
               placeholder={
-                started
-                  ? freeMode
+                !started
+                  ? "Type hi to start…"
+                  : freeMode
                     ? "Type your question here…"
-                    : "Type a message…"
-                  : "Type hi to start…"
+                    : "Tap “Other — Ask CAPA-Buddy” to type"
               }
-              className="min-h-[56px] flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-4 text-lg outline-none focus:border-accent"
+              className="min-h-[56px] flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-4 text-lg outline-none focus:border-accent disabled:cursor-not-allowed disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={busy || !input.trim()}
+              disabled={busy || !canType || !input.trim()}
               aria-label="Send"
               className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
             >

@@ -118,8 +118,8 @@ function ChatPage() {
         from: "bot",
         text: res.answer,
         logId: res.logId,
-        routed: res.kind === "routed" ? res : undefined,
         showMenu: res.kind !== "routed",
+        ...(res.kind === "routed" ? { routed: res } : {}),
       });
     } catch (e) {
       push({

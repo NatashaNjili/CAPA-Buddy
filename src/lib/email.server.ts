@@ -6,6 +6,8 @@ export async function sendEmail(to: string[], subject: string, html: string) {
     console.error("Missing SENDGRID_API_KEY");
     return { sent: false, reason: "missing_key" };
   }
+  const recipients = [...new Set(to.filter(Boolean))];
+  if (recipients.length === 0) return { sent: false, reason: "no_recipients" };
   const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
     method: "POST",
     headers: {
@@ -13,8 +15,13 @@ export async function sendEmail(to: string[], subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      personalizations: to.map((email) => ({ to: [{ email }] })),
+      personalizations: recipients.map((email) => ({
+        to: [{ email }],
+        // keep a copy in the CAPA-Buddy mailbox so sends can be verified
+        ...(email === SENDER ? {} : { bcc: [{ email: SENDER }] }),
+      })),
       from: { email: SENDER, name: "CAPA-Buddy" },
+      reply_to: { email: SENDER, name: "CAPA-Buddy" },
       subject,
       content: [{ type: "text/html", value: html }],
     }),
@@ -24,6 +31,7 @@ export async function sendEmail(to: string[], subject: string, html: string) {
     console.error("SendGrid error", res.status, body);
     return { sent: false, reason: `sendgrid_${res.status}` };
   }
+  console.log("SendGrid accepted", res.status, recipients.join(", "));
   return { sent: true };
 }
 

@@ -143,11 +143,24 @@ function ChatPage() {
   const doEmail = async (m: Message) => {
     if (!m.routed?.role) return;
     const question = [...messages].reverse().find((x) => x.from === "user")?.text ?? "";
-    setEmailed((p) => ({ ...p, [m.id]: true }));
     try {
-      await emailTeam({ data: { logId: m.logId!, question, role: m.routed.role } });
+      const res = await emailTeam({ data: { logId: m.logId!, question, role: m.routed.role } });
+      if (res.sent) {
+        setEmailed((p) => ({ ...p, [m.id]: true }));
+      } else {
+        push({
+          from: "bot",
+          text: "Sorry — I couldn't send that email just now. Please use the contact details below or tell a staff member.",
+        });
+        setShowContacts((p) => ({ ...p, [m.id]: true }));
+      }
     } catch (e) {
       console.error(e);
+      push({
+        from: "bot",
+        text: "Sorry — I couldn't send that email just now. Please use the contact details below.",
+      });
+      setShowContacts((p) => ({ ...p, [m.id]: true }));
     }
   };
 

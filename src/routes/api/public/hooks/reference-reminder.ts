@@ -11,8 +11,8 @@ export const Route = createFileRoute("/api/public/hooks/reference-reminder")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { sendEmail, emailShell } = await import("@/lib/email.server");
 
-        const url = new URL(request.url);
-        const baseUrl = `${url.protocol}//${url.host}`;
+        const { baseUrlFromRequest } = await import("@/lib/capa.server");
+        const baseUrl = baseUrlFromRequest(request);
         const { data: admins } = await supabaseAdmin
           .from("admins")
           .select("name, email, access_token");

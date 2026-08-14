@@ -117,12 +117,18 @@ Respond ONLY as JSON: {"mode":"faq|reference|route","faq_id":string|null,"answer
       const contacts = (admins ?? [])
         .filter((a) => a.role === role)
         .map((a) => ({ name: a.name, email: a.email }));
+      const who =
+        contacts.length > 0
+          ? `\n\nYou can speak to ${contacts
+              .map((c) => `**${c.name}** (${c.email})`)
+              .join(contacts.length === 2 ? " or " : ", ")}.`
+          : "";
       result = {
         logId: "",
         kind: "routed",
         role,
         contacts,
-        answer: `I don't have an answer for that one yet, so I don't want to guess. This looks like something the **${role}** team can help with.`,
+        answer: `I don't have an answer for that one yet, so I don't want to guess. This looks like something the **${role}** team can help with.${who}`,
       };
     }
 

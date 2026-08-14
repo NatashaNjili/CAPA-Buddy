@@ -18,9 +18,21 @@ export type AdminRow = {
   access_token: string;
 };
 
+// Emails must always link to a publicly reachable URL. The worker request URL can be
+// an internal/localhost host, which produces dead links in emails.
+export const PUBLIC_BASE_URL = "https://capa-buddy-ask.lovable.app";
+
 export function baseUrlFromRequest(request: Request) {
-  const url = new URL(request.url);
-  return `${url.protocol}//${url.host}`;
+  try {
+    const url = new URL(request.url);
+    const host = request.headers.get("x-forwarded-host") ?? url.host;
+    if (!host || host.includes("localhost") || host.startsWith("127.") || host.includes("::1")) {
+      return PUBLIC_BASE_URL;
+    }
+    return `https://${host}`;
+  } catch {
+    return PUBLIC_BASE_URL;
+  }
 }
 
 export async function notifyAdminsOfSuggestion(
